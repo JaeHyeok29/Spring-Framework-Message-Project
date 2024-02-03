@@ -2,18 +2,20 @@ package com.nhnacademy.edu.springframework;
 
 import com.nhn.dooray.client.DoorayHook;
 import com.nhn.dooray.client.DoorayHookSender;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Component
 public class DoorayMessageSender implements MessageSender {
 
     private final DoorayHookSender doorayHookSender;
     private final String hookurl;
 
-    public DoorayMessageSender(@Qualifier("doorayHookSender") DoorayHookSender doorayHookSender, @Value("${hookurl}") String hookurl) {
+//    @Autowired
+//    public DoorayMessageSender(@Qualifier("doorayHookSender") DoorayHookSender doorayHookSender, @Value("${hookurl}") String hookurl) {
+//        this.doorayHookSender = doorayHookSender;
+//        this.hookurl = hookurl;
+//    }
+
+    public DoorayMessageSender(DoorayHookSender doorayHookSender, String hookurl) {
         this.doorayHookSender = doorayHookSender;
         this.hookurl = hookurl;
     }
@@ -21,10 +23,9 @@ public class DoorayMessageSender implements MessageSender {
     @Override
     public boolean sendMessage(User user, String message) {
         try {
-            // DoorayHookSender 객체를 생성할 때 외부 속성인 hookurl을 사용하여 생성
+
             DoorayHookSender hookSender = new DoorayHookSender(new RestTemplate(), hookurl);
 
-            // DoorayHookSender 객체를 사용하여 메시지 전송
             hookSender.send(DoorayHook.builder()
                     .botName(user.getFirstName() + user.getLastName())
                     .text(message)
@@ -35,5 +36,4 @@ public class DoorayMessageSender implements MessageSender {
             return false;
         }
     }
-
 }

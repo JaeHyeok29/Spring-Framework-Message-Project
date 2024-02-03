@@ -9,12 +9,6 @@ public class DoorayMessageSender implements MessageSender {
     private final DoorayHookSender doorayHookSender;
     private final String hookurl;
 
-//    @Autowired
-//    public DoorayMessageSender(@Qualifier("doorayHookSender") DoorayHookSender doorayHookSender, @Value("${hookurl}") String hookurl) {
-//        this.doorayHookSender = doorayHookSender;
-//        this.hookurl = hookurl;
-//    }
-
     public DoorayMessageSender(DoorayHookSender doorayHookSender, String hookurl) {
         this.doorayHookSender = doorayHookSender;
         this.hookurl = hookurl;
@@ -30,9 +24,8 @@ public class DoorayMessageSender implements MessageSender {
                     .botName(user.getFirstName() + user.getLastName())
                     .text(message)
                     .build());
-            return true; // 전송 성공 시 true 반환
+            return true;
         } catch (Exception e) {
-            // 예외 발생 시 false 반환
             return false;
         }
     }

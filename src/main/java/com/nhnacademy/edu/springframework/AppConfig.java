@@ -1,6 +1,7 @@
 package com.nhnacademy.edu.springframework;
 
 import com.nhn.dooray.client.DoorayHookSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,32 +13,9 @@ public class AppConfig {
 
     @Bean
     public DoorayHookSender doorayHookSender() {
-        String uri = "https://hook.dooray.com/services/3204376758577275363/3727553265487230503/DIiyr9z0ROKJksd5yMFedQ";
+        String hookUrl = "https://hook.dooray.com/services/3204376758577275363/3727911831849652136/t0TgHWJ1S9SWgyLnHKk53Q";
         RestTemplate restTemplate = new RestTemplate();
-        return new DoorayHookSender(restTemplate, uri);
+        return new DoorayHookSender(restTemplate, hookUrl);
     }
 
-
-//    @Value(value = "${hookurl}")
-//    private String hookUrl;
-//
-//    @Bean
-//    public DoorayHookSender doorayHookSender() {
-//        return new DoorayHookSender(new RestTemplate(), hookUrl);
-//    }
-//
-//    @Bean
-//    public DoorayMessageSender doorayMessageSender() {
-//        return new DoorayMessageSender(doorayHookSender(), hookUrl);
-//    }
-//
-//    @Bean
-//    public MessageSenderService messageSenderService() {
-//        return new MessageSenderService(doorayMessageSender());
-//    }
-//
-//    @Bean
-//    public LoggingAspect loggingAspect() {
-//        return new LoggingAspect();
-//    }
 }

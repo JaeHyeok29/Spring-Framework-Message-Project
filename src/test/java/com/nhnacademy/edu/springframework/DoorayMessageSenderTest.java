@@ -1,39 +1,52 @@
 package com.nhnacademy.edu.springframework;
 
 import com.nhn.dooray.client.DoorayHookSender;
+import com.nhnacademy.edu.springframework.DoorayMessageSender;
+import com.nhnacademy.edu.springframework.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 
 public class DoorayMessageSenderTest {
 
+    @Mock
+    private DoorayHookSender doorayHookSenderMock;
+
+    private DoorayMessageSender doorayMessageSender;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        doorayMessageSender = new DoorayMessageSender(doorayHookSenderMock, "mockHookUrl");
+    }
+
     @Test
     public void testSendMessage_Success() {
-        DoorayHookSender doorayHookSenderMock = Mockito.mock(DoorayHookSender.class);
-        doNothing().when(doorayHookSenderMock).send(any());
-        DoorayMessageSender doorayMessageSender = new DoorayMessageSender(doorayHookSenderMock, "testHookUrl");
+        String message = "test message";
+        User user = new User("testEmail", "testPhoneNumber");
 
-        User user = new User("testFirstName", "testLastName");
-        String message = "testMessage";
+        doNothing().when(doorayHookSenderMock).send(any());
 
         boolean result = doorayMessageSender.sendMessage(user, message);
-        assertTrue(result);
+
+        verify(doorayHookSenderMock, times(1)).send(any());
+        assert result;
     }
 
     @Test
     public void testSendMessage_Failure() {
+        String message = "test message";
+        User user = new User("testEmail", "testPhoneNumber");
 
-        DoorayHookSender doorayHookSenderMock = Mockito.mock(DoorayHookSender.class);
-        doThrow(new RuntimeException()).when(doorayHookSenderMock).send(any());
-        DoorayMessageSender doorayMessageSender = new DoorayMessageSender(doorayHookSenderMock, "testHookUrl");
-        User user = new User("testFirstName", "testLastName");
-        String message = "testMessage";
+        doThrow(new RuntimeException("Failed to send message")).when(doorayHookSenderMock).send(any());
+
         boolean result = doorayMessageSender.sendMessage(user, message);
-        assertFalse(result);
+
+        verify(doorayHookSenderMock, times(1)).send(any());
+        assert !result;
     }
 }

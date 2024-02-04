@@ -1,7 +1,6 @@
 package com.nhnacademy.edu.springframework;
 
 import com.nhn.dooray.client.DoorayHookSender;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,26 +10,34 @@ import org.springframework.web.client.RestTemplate;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AppConfig {
 
-    @Value(value = "${hookurl}")
-    private String hookUrl;
-
     @Bean
     public DoorayHookSender doorayHookSender() {
-        return new DoorayHookSender(new RestTemplate(), hookUrl);
+        String uri = "https://hook.dooray.com/services/3204376758577275363/3727553265487230503/DIiyr9z0ROKJksd5yMFedQ";
+        RestTemplate restTemplate = new RestTemplate();
+        return new DoorayHookSender(restTemplate, uri);
     }
 
-    @Bean
-    public DoorayMessageSender doorayMessageSender() {
-        return new DoorayMessageSender(doorayHookSender(), hookUrl);
-    }
 
-    @Bean
-    public MessageSenderService messageSenderService() {
-        return new MessageSenderService(doorayMessageSender());
-    }
-
-    @Bean
-    public LoggingAspect loggingAspect() {
-        return new LoggingAspect();
-    }
+//    @Value(value = "${hookurl}")
+//    private String hookUrl;
+//
+//    @Bean
+//    public DoorayHookSender doorayHookSender() {
+//        return new DoorayHookSender(new RestTemplate(), hookUrl);
+//    }
+//
+//    @Bean
+//    public DoorayMessageSender doorayMessageSender() {
+//        return new DoorayMessageSender(doorayHookSender(), hookUrl);
+//    }
+//
+//    @Bean
+//    public MessageSenderService messageSenderService() {
+//        return new MessageSenderService(doorayMessageSender());
+//    }
+//
+//    @Bean
+//    public LoggingAspect loggingAspect() {
+//        return new LoggingAspect();
+//    }
 }

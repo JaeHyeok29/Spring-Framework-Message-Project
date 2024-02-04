@@ -2,14 +2,17 @@ package com.nhnacademy.edu.springframework;
 
 import com.nhn.dooray.client.DoorayHook;
 import com.nhn.dooray.client.DoorayHookSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class DoorayMessageSender implements MessageSender {
-
     private final DoorayHookSender doorayHookSender;
     private final String hookUrl;
 
-    public DoorayMessageSender(DoorayHookSender doorayHookSender, String hookUrl) {
+    public DoorayMessageSender(DoorayHookSender doorayHookSender, @Value("${hookurl}") String hookUrl) {
         this.doorayHookSender = doorayHookSender;
         this.hookUrl = hookUrl;
     }
@@ -17,10 +20,7 @@ public class DoorayMessageSender implements MessageSender {
     @Override
     public boolean sendMessage(User user, String message) {
         try {
-
-            DoorayHookSender hookSender = new DoorayHookSender(new RestTemplate(), hookUrl);
-
-            hookSender.send(DoorayHook.builder()
+            doorayHookSender.send(DoorayHook.builder()
                     .botName(user.getFirstName() + user.getLastName())
                     .text(message)
                     .build());

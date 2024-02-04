@@ -7,11 +7,13 @@ public class Main {
     private static final String MESSAGE = "test message";
 
     public static void main(String[] args) {
-        User user = new User("email", "phoneNumber");
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("AppConfig.class")) {
+            MessageSenderService messageSenderService = context.getBean(MessageSenderService.class);
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("com.nhnacademy.edu.springframework");
-        MessageSenderService messageSendService = context.getBean("messageSenderService", MessageSenderService.class);
+            User user = new User("email", "phoneNumber");
+            messageSenderService.sendMessage(user, MESSAGE);
+        }
 
-        messageSendService.sendMessage(user, MESSAGE);
+
     }
 }

@@ -2,8 +2,10 @@ package com.nhnacademy.edu.springframework;
 
 import com.nhn.dooray.client.DoorayHook;
 import com.nhn.dooray.client.DoorayHookSender;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class DoorayMessageSender implements MessageSender {
 
     private final DoorayHookSender doorayHookSender;
@@ -15,6 +17,7 @@ public class DoorayMessageSender implements MessageSender {
     }
 
     @Override
+    @MeasureExecutionTime
     public boolean sendMessage(User user, String message) {
         try {
 

@@ -1,13 +1,17 @@
 package com.nhnacademy.edu.springframework;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.client.RestTemplate;
 
 public class Main {
+
+    private static final String MESSAGE = "test message";
+
     public static void main(String[] args) {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            RestTemplate restTemplate = context.getBean(RestTemplate.class);
-        }
+        User user = new User("email", "phoneNumber");
+
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("com.nhnacademy.edu.springframework");
+        MessageSenderService messageSendService = context.getBean("messageSenderService", MessageSenderService.class);
+
+        messageSendService.sendMessage(user, MESSAGE);
     }
 }

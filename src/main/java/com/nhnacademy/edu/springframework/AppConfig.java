@@ -7,27 +7,30 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @ComponentScan(basePackages = "com.nhnacademy.edu.springframework")
-@PropertySource(value = "classpath:dooraymessage.properties", encoding = "UTF-8")
+@PropertySource("classpath:dooraymessage.properties")
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-
 public class AppConfig {
+
+    @Value(value = "${hookurl}")
+    private String hookUrl;
+
     @Bean
-    public MessageService messageService() {
-        return new EmailService();
+    public DoorayHookSender doorayHookSender() {
+        return new DoorayHookSender(new RestTemplate(), hookUrl);
     }
 
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        return new RestTemplate();
-//    }
-//
-//    @Bean
-//    public DoorayHookSender doorayHookSender(RestTemplate restTemplate, @Value("${hookUrl}") String hookUrl) {
-//        return new DoorayHookSender(restTemplate, hookUrl);
-//    }
-//
-//    @Bean
-//    public DoorayMessageSender doorayMessageSender(DoorayHookSender doorayHookSender) {
-//        return new DoorayMessageSender(doorayHookSender);
-//    }
+    @Bean
+    public DoorayMessageSender doorayMessageSender() {
+        return new DoorayMessageSender(doorayHookSender(), hookUrl);
+    }
+
+    @Bean
+    public MessageSenderService messageSenderService() {
+        return new MessageSenderService(doorayMessageSender());
+    }
+
+    @Bean
+    public LoggingAspect loggingAspect() {
+        return new LoggingAspect();
+    }
 }
